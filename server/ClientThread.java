@@ -6,11 +6,12 @@ public  class ClientThread extends Thread {
     private Socket ThreadSocket = null;
     private DataInputStream StreamIn = null;
     private DataOutputStream StreamOut = null;
-    private String Nickname = null;
+    private String Nickname;
     private Client_Connections connections = null;
     public ClientThread(Socket CurrentDataSocket,Client_Connections connections){
         ThreadSocket = CurrentDataSocket;
         this.connections = connections;
+        Util.Log(Thread.currentThread().getName());
     }
 
         
@@ -20,13 +21,15 @@ public  class ClientThread extends Thread {
         while (ThreadSocket.isConnected())
         {
             try{
-                //Leggo ogni riga
-                m = StreamIn.readUTF();
+                String in;
+                in = StreamIn.readUTF();
                 //Controllo se la riga corrisponde al segnale di fine trasmissione scelto da client e server, in questo caso ho scelto exit
-                if (m.equals("exit\n")){
+                if (in.equals("exit\n")){
                     Util.Log("Segnale di fine trasmissione ricevuto");
                     break;
                 }
+                //Leggo ogni riga
+                m += in;
                 Util.Log("Dati ricevuti dal Client:\n" + m);
             }
             catch (EOFException err) {
@@ -37,6 +40,7 @@ public  class ClientThread extends Thread {
                 Util.Log(err);
             }
         }
+        Util.Log(m);
         return m;
     }
 

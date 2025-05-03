@@ -7,6 +7,8 @@ public class Chat {
     public static void BroadCast(String NickName,String Message, Client_Connections connections){
         for (ClientThread current : connections.Client_Connenctions){
             try {
+                if (NickName == null || NickName.isEmpty())
+                    NickName = "Anonymous";
                 current.OutData(NickName + ": " + Message);   
             } catch (Exception Err) {
                 Util.Log(Err);
@@ -26,16 +28,14 @@ public class Chat {
      */
     //Return true se l'azione è stata eseguita con successo altrimenti false
     public static  boolean Handle_Message(String NickName,String Message, Client_Connections connections){
-        if (!Message.contains(" ")){
-            Util.Log("Messaggio incomprensibile, nessun Azione");
-            return false;
-        }
-        String Action = Message.substring(0, Message.indexOf(" "));
+        String Action = Message.substring(0, 3);
+        Util.Log("Action del client: " + Action);
         switch (Action){
             case "SET" -> {
                 return false;
             }
             case "TXT" -> {
+                Util.Log("Broadcasting the message");
                 BroadCast(NickName, Message,connections);
                 return true;
             }

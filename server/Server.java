@@ -38,7 +38,9 @@ public class Server
             while (!ListeningPoint.isClosed()){
                 //Semplicemente richiamo i metodi
                 Socket NewSocket = AcceptConnection();
-                connections.Push(new ClientThread(NewSocket,connections));
+                ClientThread thread = new ClientThread(NewSocket, connections);
+                thread.start();
+                connections.Push(thread);
             }
         }
         catch (Exception err){
