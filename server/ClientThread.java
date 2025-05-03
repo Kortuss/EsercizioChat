@@ -2,15 +2,16 @@ package server;
 import java.io.*;
 import java.net.*;
 import util.Util;
-public  class ClientThread extends Thread {
+public class ClientThread extends Thread {
     private Socket ThreadSocket = null;
     private DataInputStream StreamIn = null;
     private DataOutputStream StreamOut = null;
-    private String Nickname;
     private Client_Connections connections = null;
+    private final Chat Chat_Handler;
     public ClientThread(Socket CurrentDataSocket,Client_Connections connections){
         ThreadSocket = CurrentDataSocket;
         this.connections = connections;
+        Chat_Handler = new Chat();
         Util.Log(Thread.currentThread().getName());
     }
 
@@ -76,8 +77,15 @@ public  class ClientThread extends Thread {
                 String Data = InData();
                 if (Data.equals("Close") || Data.equals("Close\n"))
                     break;
-                else
-                    Chat.Handle_Message(Nickname, Data,connections);
+                else{
+                    try {
+                        Chat_Handler.Handle_Message(Data,connections);
+                    } catch (Exception e) {
+                        OutData("qualcosa è andato storto nella gestione della tua richiesta (internal server error)");
+                        OutData("Ecco l'errore: " + e);
+                    }
+                        
+                }
             }
             CloseClientInstances();
         } catch (Exception e) {

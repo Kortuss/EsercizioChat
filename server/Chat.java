@@ -2,9 +2,9 @@ package server;
 import util.Util;
 
 public class Chat {
-    
+    String NickName;
 
-    public static void BroadCast(String NickName,String Message, Client_Connections connections){
+    public void BroadCast(String Message, Client_Connections connections){
         for (ClientThread current : connections.Client_Connenctions){
             try {
                 if (NickName == null || NickName.isEmpty())
@@ -15,6 +15,7 @@ public class Chat {
             }
         }  
     }
+
 
     /*
      * i messaggi sono composti da una parole azione per comprendere cosa il server deve compiere ed il contenuto del messaggio
@@ -27,21 +28,23 @@ public class Chat {
      * (Invia un messaggio)
      */
     //Return true se l'azione è stata eseguita con successo altrimenti false
-    public static  boolean Handle_Message(String NickName,String Message, Client_Connections connections){
+    public void Handle_Message(String Message, Client_Connections connections) throws Exception{
         String Action = Message.substring(0, 3);
+        Message = Message.substring(3);
         Util.Log("Action del client: " + Action);
         switch (Action){
             case "SET" -> {
-                return false;
+                NickName = Message;
+                return;
             }
             case "TXT" -> {
                 Util.Log("Broadcasting the message");
-                BroadCast(NickName, Message,connections);
-                return true;
+                BroadCast(Message,connections);
+                return;
             }
             default -> Util.Log("Azione non conosciuta, il server non performerà nessun azione");
         }
-        return false;
+        throw new Exception("Azione non conosciuta, il server non performerà nessun azione");
         
     }
 }
