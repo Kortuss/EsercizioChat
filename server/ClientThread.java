@@ -19,7 +19,7 @@ public class ClientThread extends Thread {
     public String InData() throws Exception{
         String m = "";
         //Ciclo while che si interrompe in caso di chiusura inaspettata del DataSocket
-        while (ThreadSocket.isConnected())
+        while (true)
         {
             try{
                 String in;
@@ -39,8 +39,11 @@ public class ClientThread extends Thread {
             }
             catch (IOException err) {
                 Util.Log(err);
+                CloseClientInstances();
+                break;
             }
         }
+
         Util.Log(m);
         return m;
     }
@@ -73,7 +76,7 @@ public class ClientThread extends Thread {
     public void run() {
         try {
             InstanceStreams();
-            while (ThreadSocket.isConnected()){
+            while (!ThreadSocket.isClosed()){
                 String Data = InData();
                 if (Data.equals("Close") || Data.equals("Close\n"))
                     break;

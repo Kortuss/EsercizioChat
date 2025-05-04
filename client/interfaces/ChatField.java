@@ -1,6 +1,8 @@
+package client.interfaces;
+import client.Client;
 import java.awt.*;
 import javax.swing.*;
-
+import util.Util;
 public class ChatField {
     JPanel TextFieldPanel = null;
     JTextField MainField = null;
@@ -21,14 +23,17 @@ public class ChatField {
         TextFieldPanel.add(SendButton);
     }
 
-    public void HandleEvent(JFrame frame, ChatLog chatLog){
+    public void HandleEvent(JFrame frame, ChatLog chatLog, Client client){
         SendButton.addActionListener(_ -> {
-            chatLog.Display_Data( MainField.getText());
-            MainField.setText("");
+            try {
+                client.Send_Message(MainField.getText());
+                MainField.setText("");
+            } catch (Exception e) {
+                Util.Log(e);
+            }
         });
     }
     
-
     public void Render(JFrame MainFrame){
         MainFrame.add(TextFieldPanel,BorderLayout.SOUTH);
     }
