@@ -6,6 +6,7 @@ public class Render{
     JFrame frame = null;
     ChatField chatField = null;
     ChatLog ChatLog = null;
+    Menu menu;
     public Render(Client MyClient){
         frame = new JFrame("Software_Chat");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -14,9 +15,12 @@ public class Render{
         frame.setLayout(new BorderLayout());
         chatField = new ChatField("Messaggio:","Invia");
         ChatLog = new ChatLog();
+        menu = new Menu();
         chatField.HandleEvent(frame,ChatLog,MyClient);
+        menu.HandleEvent(frame,MyClient);
         chatField.Render(frame);
         ChatLog.Render(frame);
+        menu.render(frame);
         frame.setVisible(true);
     }
 

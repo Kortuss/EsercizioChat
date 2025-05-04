@@ -5,6 +5,7 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 public class ChatLog {
+    public JScrollPane ChatScrollPanel = null;
     public JPanel ChatPanel = null;
     Color PanelColor = null;
     List<JLabel> Messages = null;
@@ -12,11 +13,14 @@ public class ChatLog {
 
     public ChatLog() {
         ChatPanel = new JPanel();
+        ChatScrollPanel = new JScrollPane();
+        ChatScrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         PanelColor = new Color(15858900);
         ChatPanel.setBackground(PanelColor);
         ChatPanel.setLayout(new BoxLayout(ChatPanel, BoxLayout.Y_AXIS));
         ChatPanel.setBorder(new EmptyBorder(10, 20, 0 ,0)); // top, left, bottom, right
-        Messages = new ArrayList<>();            
+        Messages = new ArrayList<>();     
+        ChatScrollPanel.setViewportView(ChatPanel);  
     }
 
     public void Display_Data(String Message){
@@ -29,10 +33,12 @@ public class ChatLog {
         ChatPanel.add(Box.createVerticalStrut(10));
         ChatPanel.revalidate();
         ChatPanel.repaint();
+        ChatScrollPanel.revalidate();
+        ChatScrollPanel.repaint();
     }
 
     public void Render(JFrame frame){
-        frame.add(ChatPanel,BorderLayout.CENTER);
+        frame.add(ChatScrollPanel,BorderLayout.CENTER);
     }
     
 }

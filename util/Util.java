@@ -7,6 +7,6 @@ public class Util {
     }
 
     public static void Log(Exception Err){
-        System.out.println(Err);
+        System.out.println(Red + Err + Reset);
     }
 }

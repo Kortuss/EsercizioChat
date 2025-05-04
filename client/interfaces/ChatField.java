@@ -26,6 +26,8 @@ public class ChatField {
     public void HandleEvent(JFrame frame, ChatLog chatLog, Client client){
         SendButton.addActionListener(_ -> {
             try {
+                if (MainField.getText().isEmpty())
+                    return;
                 client.Send_Message(MainField.getText());
                 MainField.setText("");
             } catch (Exception e) {
