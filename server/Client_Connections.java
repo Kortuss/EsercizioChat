@@ -15,7 +15,4 @@ public class Client_Connections {
 	public void Push(ClientThread ToPush){
 		Client_Connenctions.add(ToPush);
 	}
-
-
-
 }

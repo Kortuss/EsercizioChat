@@ -8,7 +8,6 @@ import java.net.*;
 import util.*;
 public class Client
 {
-    public String Nickname = "";
     //Dichiaro il socket che si connetterà al server
     private Socket DataSocket = null;
     //Dichiaro gli stream
@@ -93,6 +92,13 @@ public class Client
                 Util.Log(e);
             }
         }
+    }
+
+    public void Change_Host (String Host, int Port) throws Exception{
+        CloseClient();
+        this.DataSocket = new Socket(Host,Port);    
+        this.StreamOut = new DataOutputStream(DataSocket.getOutputStream());
+        this.StreamIn = new DataInputStream(DataSocket.getInputStream());
     }
 
     public static void main(){

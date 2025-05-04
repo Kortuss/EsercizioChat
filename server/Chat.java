@@ -2,14 +2,14 @@ package server;
 import util.Util;
 
 public class Chat {
-    String NickName;
 
-    public void BroadCast(String Message, Client_Connections connections){
+    public static  void BroadCast(String Message, Client_Connections connections,Long threadMit,String Nickname){
         for (ClientThread current : connections.Client_Connenctions){
             try {
-                if (NickName == null || NickName.isEmpty())
-                    NickName = "Anonymous";
-                current.OutData(NickName + ": " + Message);   
+                System.out.println(current.GetThreadNickName());
+                if (current.threadId() == threadMit)
+                    current.OutData("(TU)" + Nickname + ": " + Message); 
+                else current.OutData(Nickname + ": " + Message);
             } catch (Exception Err) {
                 Util.Log(Err);
             }
@@ -28,18 +28,18 @@ public class Chat {
      * (Invia un messaggio)
      */
     //Return true se l'azione è stata eseguita con successo altrimenti false
-    public void Handle_Message(String Message, Client_Connections connections) throws Exception{
+    public static  void Handle_Message(String Message, Client_Connections connections,ClientThread This_Client) throws Exception{
         String Action = Message.substring(0, 3);
         Message = Message.substring(3);
         Util.Log("Action del client: " + Action);
         switch (Action){
             case "SET" -> {
-                NickName = Message;
+                This_Client.SetThreadNickName(Message);
                 return;
             }
             case "TXT" -> {
                 Util.Log("Broadcasting the message");
-                BroadCast(Message,connections);
+                BroadCast(Message,connections,This_Client.threadId(),This_Client.GetThreadNickName());
                 return;
             }
             default -> Util.Log("Azione non conosciuta, il server non performerà nessun azione");

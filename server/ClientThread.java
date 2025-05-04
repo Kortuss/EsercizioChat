@@ -7,11 +7,11 @@ public class ClientThread extends Thread {
     private DataInputStream StreamIn = null;
     private DataOutputStream StreamOut = null;
     private Client_Connections connections = null;
-    private final Chat Chat_Handler;
+    String NickName;
     public ClientThread(Socket CurrentDataSocket,Client_Connections connections){
         ThreadSocket = CurrentDataSocket;
         this.connections = connections;
-        Chat_Handler = new Chat();
+        NickName = "User" + Long.toString(this.threadId());
         Util.Log(Thread.currentThread().getName());
     }
 
@@ -46,6 +46,14 @@ public class ClientThread extends Thread {
 
         Util.Log(m);
         return m;
+    }
+    
+    public String GetThreadNickName (){
+        return NickName;
+    }
+
+    public void SetThreadNickName (String NickName){
+        this.NickName = NickName;
     }
 
     public void OutData(String Message) throws Exception{
@@ -82,7 +90,7 @@ public class ClientThread extends Thread {
                     break;
                 else{
                     try {
-                        Chat_Handler.Handle_Message(Data,connections);
+                        Chat.Handle_Message(Data,connections,this);
                     } catch (Exception e) {
                         OutData("qualcosa è andato storto nella gestione della tua richiesta (internal server error)");
                         OutData("Ecco l'errore: " + e);
