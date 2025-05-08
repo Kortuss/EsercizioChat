@@ -7,6 +7,12 @@ package server;
 import java.net.*;
 import util.Util;
 
+/*
+ * TO DO:
+ * Il software client deve potersi aprire senza essere connesso al server, far aprire il software e impostare un dialog bloccante, finche non ci si connette 
+ * ad un server funzionante non si puo accedere all'app: ✅
+ */
+
 public class Server
 {
     

@@ -3,13 +3,10 @@ package client.interfaces;
 import client.Client;
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 import util.Util;
 
 public class Menu {
@@ -45,36 +42,35 @@ public class Menu {
         });
 
         Set_Host.addActionListener(_ -> {
-            JPanel HostPanel = new JPanel();
-            JTextField Host = new JTextField(10);
-            JTextField Port = new JTextField(10);
-            JLabel HostLabel = new JLabel("Host:");
-            JLabel PortLabel = new JLabel("Porta:");
-            HostPanel.add(HostLabel);
-            HostPanel.add(Host);
-            HostPanel.add(PortLabel);
-            HostPanel.add(Port);
-            do{ 
-                int result = JOptionPane.showConfirmDialog(
-                    frame,
-                    HostPanel,
-                    "Inserisci Dati Connessione",
-                    JOptionPane.OK_CANCEL_OPTION,
-                    JOptionPane.PLAIN_MESSAGE
-                ); 
-                if (result == 2)
-                    return;
-            }while(Host.getText().isEmpty() || Port.getText().isEmpty());
-            try {
-                MyClient.Change_Host(Host.getText(), Integer.parseInt(Port.getText()));
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(frame,"ERRORE NELLA CONNESSIONE: " + e);
-                Util.Log(e);
-                try {
-                    MyClient.Change_Host("localhost", 3009);
-                } catch (Exception err) {
-                    Util.Log(err);
+            String CurrentHost = MyClient.CurrentHost;
+            int CurrentPort = MyClient.CurrentPort;
+            System.out.println(CurrentHost + CurrentPort);
+            ConnectionDialog ChangeHost = new ConnectionDialog();
+            while (true) {
+                int result = ChangeHost.Render(frame);
+                if (result == 2 || result == -1){
+                   System.exit(0);
+                }        
+                String host = ChangeHost.GetHostValue();
+                String portStr = ChangeHost.GetPortValue();
+        
+                if (host.isEmpty() || portStr.isEmpty()) {
+                    JOptionPane.showMessageDialog(frame, "Host e porta non possono essere vuoti.");
+                    continue;
                 }
+        
+                try {
+                    MyClient.Change_Host(host, Integer.parseInt(portStr));
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(frame, "ERRORE NELLA CONNESSIONE: " + e.getMessage());
+                    Util.Log(e);
+                    continue;
+                }
+        
+                if (MyClient.isConnected())
+                    return;
+        
+                JOptionPane.showMessageDialog(frame, "Connessione fallita. Riprova.");
             }
         });
     }

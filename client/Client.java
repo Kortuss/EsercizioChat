@@ -13,6 +13,8 @@ public class Client
     //Dichiaro gli stream
     private DataInputStream StreamIn = null;
     private DataOutputStream StreamOut = null;
+    public String CurrentHost;
+    public int CurrentPort;
     
     public void CloseClient() throws Exception {
         Util.Log("Operazioni concluse\nChiusura connessione");
@@ -20,6 +22,10 @@ public class Client
         StreamIn.close();
         StreamOut.close();
         DataSocket.close();
+    }
+
+    public boolean isConnected(){
+        return DataSocket.isConnected();
     }
 
     public void OutData(String Messaage) throws Exception {
@@ -60,12 +66,17 @@ public class Client
 
     public Client(int Port, String Address) throws Exception {
         this.DataSocket = new Socket(Address,Port);    
+        CurrentHost = Address;
+        CurrentPort = Port;
         //queste operazioni mi permettono di associare le stream di input e output provienient al socket ad un Data Stream
         //Le Data Stream sono tipi di stream più avanzate ed astratte che mi facilitano il lavoro permettendomi di inviare dati nei tipi predisposti da Java (int,bool,string ecc.)
         //è anche possibile non usare questa classe, la comunicazione dovrebbe venire però byte per byte, e la gestione di questi dati primitivi risulterebbe complessa e superflua per il nostro compito
         this.StreamOut = new DataOutputStream(DataSocket.getOutputStream());
         this.StreamIn = new DataInputStream(DataSocket.getInputStream());
 	}
+
+    public Client(){
+    }
 
     public void Send_Message(String Data) throws Exception{
         OutData("TXT " + Data);
@@ -87,6 +98,9 @@ public class Client
             try {
                 Util.Log("Waiting For messages:");
                 String Data = InData();
+                if (Data == null){
+                    return "";
+                }
                 callback.onMessageReceived(Data);
             } catch (Exception e) {
                 Util.Log(e);
@@ -95,15 +109,18 @@ public class Client
     }
 
     public void Change_Host (String Host, int Port) throws Exception{
-        CloseClient();
-        this.DataSocket = new Socket(Host,Port);    
+        if (DataSocket != null)
+            CloseClient();
+        DataSocket = new Socket(Host,Port);
+        if (DataSocket == null)
+            throw new Exception("Impossibile connettersi, verificare i parametri di connessione");
         this.StreamOut = new DataOutputStream(DataSocket.getOutputStream());
         this.StreamIn = new DataInputStream(DataSocket.getInputStream());
     }
 
     public static void main(){
         try {
-            Client MyClient = new Client(3009,"localhost");
+            Client MyClient = new Client();
             Render Application = new Render(MyClient);
             WaitThread Wait_Messages = new WaitThread(MyClient,Application);
             Wait_Messages.start();
