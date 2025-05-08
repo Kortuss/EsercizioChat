@@ -12,11 +12,13 @@ public class WaitThread extends Thread{
     }
 
     public void Handle_Messages(String Message){
+        //Chiamo la funzione per renderizzare il messaggio nel log della chat
         render.Render_Message(Message);
     }
 
     @Override
     public void run(){
+        //Richiamo la funzione con la callback per gestire i messaggi in arrivo
         MyClient.Wait_For_Messages(Data -> Handle_Messages(Data));
     }
 }

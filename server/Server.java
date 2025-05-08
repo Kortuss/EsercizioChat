@@ -1,4 +1,4 @@
-// Scrittura di una classe Server che si occupa di gestire le connessioni in entrata e la comunicazione con i client+
+// Scrittura di una classe Server che si occupa di gestire le connessioni in entrata e la comunicazione con i client
 //Autore: Hiras Picano V B INF
 //Compito assegnato il 21/03/25 per il 24/03/25
 // package declaration removed as it was incomplete

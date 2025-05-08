@@ -89,6 +89,7 @@ public class ClientThread extends Thread {
             InstanceStreams();
             while (!ThreadSocket.isClosed()){
                 String Data = InData();
+                //Se il client invia close vuole chiudere la comunicazione con il server
                 if (Data.equals("Close") || Data.equals("Close\n"))
                     break;
                 else{

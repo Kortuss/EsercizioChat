@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
+//Classe che si occupa semplicemente di astrarre un array di Thread
 public class Client_Connections {
 	public List<ClientThread> Client_Connenctions = null;
 

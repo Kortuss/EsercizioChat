@@ -79,41 +79,53 @@ public class Client
     }
 
     public void Send_Message(String Data) throws Exception{
+        //Invio il messaggio con il prefisso TXT perchè ho scelto di impostare così la comiuncazione
         OutData("TXT " + Data);
         Util.Log("TXT " + Data);
         OutData("exit");
     }
 
     public void Set_NickName(String NickName) throws Exception{
+        //Set è per impostare un nickname
         OutData("SET " + NickName);
         OutData("exit");
     }
     @FunctionalInterface
     public interface MessageCallback{
+        //Semplice interface per implementare una callback
         public void onMessageReceived(String Data);
     }
 
     public String Wait_For_Messages(MessageCallback callback){
+        //Il client qui non fa nient altro che mettersi in ascolto per messaggi
         while (true){
+            //Ciclo infinito poichè lo dobrà fare fino a che il porgramm non sarà chiuso
             try {
                 Util.Log("Waiting For messages:");
+                //Richiamo semplicemente la funzione di input dal socket
                 String Data = InData();
+                //Se nulla ritorno un messaggio vuoto per non incorrere in runtime excpetion causate da valori nulli
                 if (Data == null){
                     return "";
                 }
+                //qui richiamo il callback, così che la funzione chiamante(che sarà un thread in esecuzione paralle) potrà decidere cosa fare del messaggio
                 callback.onMessageReceived(Data);
             } catch (Exception e) {
                 Util.Log(e);
             }
         }
     }
-
+    //Funzione che si occupa di cambiare host
     public void Change_Host (String Host, int Port) throws Exception{
+        //Se il datasocket è nullo evito di chiudere il socket(sarebbe inutile)
         if (DataSocket != null)
             CloseClient();
+        //richiamo il costruttore
         DataSocket = new Socket(Host,Port);
+        //Se il socket è ancora nullo significa
         if (DataSocket == null)
             throw new Exception("Impossibile connettersi, verificare i parametri di connessione");
+        //Associo gli stream
         this.StreamOut = new DataOutputStream(DataSocket.getOutputStream());
         this.StreamIn = new DataInputStream(DataSocket.getInputStream());
     }
