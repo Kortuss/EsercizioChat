@@ -7,12 +7,14 @@ public class ClientThread extends Thread {
     private DataInputStream StreamIn = null;
     private DataOutputStream StreamOut = null;
     private Client_Connections connections = null;
+    public int Interazioni;
     String NickName;
     public ClientThread(Socket CurrentDataSocket,Client_Connections connections){
         ThreadSocket = CurrentDataSocket;
         this.connections = connections;
         NickName = "User" + Long.toString(this.threadId());
         Util.Log(Thread.currentThread().getName());
+        Interazioni = 0;
     }
 
         
@@ -67,6 +69,7 @@ public class ClientThread extends Thread {
     public void CloseClientInstances() throws Exception {
         //Mi ricordo di chiudere DataSocke e Streams di questo specifico client
         Util.Log("Chiusura Connessione di questo specifico Client");
+        System.out.println("Sto stampando Le interazioni del client " + NickName + ": " + Interazioni);
         StreamIn.close();
         StreamOut.close();
         ThreadSocket.close();
@@ -90,6 +93,7 @@ public class ClientThread extends Thread {
                     break;
                 else{
                     try {
+                        Interazioni++;
                         Chat.Handle_Message(Data,connections,this);
                     } catch (Exception e) {
                         OutData("qualcosa è andato storto nella gestione della tua richiesta (internal server error)");
